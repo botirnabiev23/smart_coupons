@@ -232,9 +232,9 @@ class CategoriesList extends StatelessWidget {
                       width: 32,
                       height: 32,
                     ),
-                    const Gap(10),
+                    const Gap(12),
                     Text(
-                      'Add New Category',
+                      'Add New\nCategory',
                       style: TextStyle(
                         color: Color(0xff6600E4),
                         fontSize: 16,
