@@ -62,23 +62,28 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: SafeArea(
-        child: CategoriesList(),
-      ),
+      body: SafeArea(child: CategoriesList()),
     );
   }
 }
 
 class CategoriesItem extends StatelessWidget {
   final Categories coupon;
-  final Color color;
+  final Color colorBack;
+  final Color colorText;
 
-  const CategoriesItem({super.key, required this.coupon, required this.color});
+  const CategoriesItem({
+    super.key,
+    required this.coupon,
+    required this.colorBack,
+    required this.colorText,
+  });
 
   @override
   Widget build(BuildContext context) {
     return IntrinsicWidth(
       child: InkWell(
+        splashColor: Colors.transparent,
         onTap: () {
           Navigator.push(
             context,
@@ -94,7 +99,7 @@ class CategoriesItem extends StatelessWidget {
           height: 92,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: color.withOpacity(0.1),
+            color: colorText.withOpacity(0.1),
           ),
           child: Center(
             child: Text(
@@ -102,7 +107,7 @@ class CategoriesItem extends StatelessWidget {
               maxLines: 1,
               coupon.title,
               style: TextStyle(
-                color: color,
+                color: colorBack,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -114,22 +119,33 @@ class CategoriesItem extends StatelessWidget {
   }
 }
 
+const List<Color> colorsBack = [
+  Color(0xffE40050),
+  Color(0xff0063E4),
+  Color(0xffE46A00),
+  Color(0xff00D03A),
+  Color(0xff00C7B0),
+  Color(0xff6EC300),
+  Color(0xff00ABE4),
+  Color(0xff0050E4),
+];
+
+const List<Color> colorsText = [
+  Color(0xffE40050),
+  Color(0xff0063E4),
+  Color(0xffE46A00),
+  Color(0xff00E440),
+  Color(0xff00E4C9),
+  Color(0xff81E400),
+  Color(0xff00ABE4),
+  Color(0xff0050E4),
+];
+
 class CategoriesList extends StatelessWidget {
   const CategoriesList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Color> colors = [
-      Color(0xffE40050),
-      Color(0xff0063E4),
-      Color(0xffE46A00),
-      Color(0xff00D03A),
-      Color(0xff00C7B0),
-      Color(0xff6EC300),
-      Color(0xff00ABE4),
-      Color(0xff0050E4),
-    ];
-
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (state is CategoryListUpdate) {
@@ -187,7 +203,8 @@ class CategoriesList extends StatelessWidget {
                       state.categories.length,
                       (index) => CategoriesItem(
                         coupon: state.categories[index],
-                        color: colors[index % colors.length],
+                        colorText: colorsText[index % colorsText.length],
+                        colorBack: colorsBack[index % colorsBack.length],
                       ),
                     ),
                   ),
