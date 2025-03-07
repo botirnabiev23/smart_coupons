@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_coupons/pages/coupons/widgets/coupons_bottom_sheet_widget.dart';
+import 'package:smart_coupons/pages/coupons/coupons_add_page.dart';
+import 'package:smart_coupons/pages/coupons/widgets/coupons_bottom_sheet_widgets.dart';
 
 class CouponsPage extends StatelessWidget {
   final String title;
