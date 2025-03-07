@@ -53,7 +53,7 @@ class CouponsPage extends StatelessWidget {
                         ),
                         const Gap(10),
                         Text(
-                          'Add New Coupon',
+                          'Add New\n Coupon',
                           style: TextStyle(
                             color: Color(0xff6600E4),
                             fontSize: 16,

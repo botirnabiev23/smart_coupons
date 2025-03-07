@@ -38,27 +38,36 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       context: context,
       builder:
           (context) => CupertinoActionSheet(
-            title: Text('Select Image'),
+            title: Text('Add a Coupon`s Photo'),
             actions: [
               CupertinoActionSheetAction(
                 onPressed: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
                 },
-                child: Text('Take a Photo'),
+                child: Text(
+                  'Take a Photo',
+                  style: TextStyle(color: Color(0xff6600E4), fontSize: 17),
+                ),
               ),
               CupertinoActionSheetAction(
                 onPressed: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
                 },
-                child: Text('Choose from Gallery'),
+                child: Text(
+                  'Choose from Gallery',
+                  style: TextStyle(color: Color(0xff6600E4), fontSize: 17),
+                ),
               ),
             ],
             cancelButton: CupertinoActionSheetAction(
               isDefaultAction: true,
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Color(0xff6600E4), fontSize: 17),
+              ),
             ),
           ),
     );
@@ -75,7 +84,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           transitionBetweenRoutes: false,
           previousPageTitle: 'Quit',
           middle: Text('New Coupon'),
-          trailing: IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+          trailing: TextButton(onPressed: () {}, child: Text('Save')),
         ),
         child: Material(
           child: CustomScrollView(
@@ -113,6 +122,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                         ),
                         const Gap(16),
                         InkWell(
+                          splashColor: Colors.transparent,
                           onTap: _showImagePickerOptions,
                           borderRadius: BorderRadius.circular(24),
                           child:
@@ -174,6 +184,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                           Text('Or', style: TextStyle(color: Colors.grey)),
                           const Gap(8),
                           InkWell(
+                            splashColor: Colors.transparent,
                             onTap: () {},
                             borderRadius: BorderRadius.circular(24),
                             child: Container(
