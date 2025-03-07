@@ -220,7 +220,32 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                         ),
                         if (_image == null) ...[
                           const Gap(8),
-                          Text('Or', style: TextStyle(color: Colors.grey)),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ColoredBox(
+                                  color: Colors.grey.shade300,
+                                  child: SizedBox(height: 1),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  'Or',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: ColoredBox(
+                                  color: Colors.grey.shade300,
+                                  child: SizedBox(height: 1),
+                                ),
+                              ),
+                            ],
+                          ),
                           const Gap(8),
                           InkWell(
                             splashColor: Colors.transparent,
