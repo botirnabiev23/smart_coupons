@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_coupons/pages/coupons/widgets/coupons_bottom_sheet_widgets.dart';
 import 'package:smart_coupons/pages/coupons/widgets/coustom_box_widget.dart';
+import 'package:smart_coupons/theme/colors.dart';
 
 class CouponsAddWidget extends StatefulWidget {
   const CouponsAddWidget({super.key});
@@ -21,10 +21,13 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
   final TextEditingController controller = TextEditingController();
 
   Future<void> _pickImage(ImageSource source) async {
+    print("Picking image from $source...");
     final pickedFile = await _picker.pickImage(source: source);
+    print("Picked file: $pickedFile");
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        print("Image selected: ${_image?.path}");
       });
     }
   }
@@ -61,12 +64,12 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                             hintText: 'Name',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xff6600E4)),
+                              borderSide: BorderSide(color: primaryColor),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Color(0xff6600E4),
+                                color: primaryColor,
                                 width: 2,
                               ),
                             ),
@@ -82,7 +85,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           onTap:
                               () => showImagePickerOptions(
                                 context,
-                                _pickImage(ImageSource.gallery),
+                                _pickImage,
                               ),
                           borderRadius: BorderRadius.circular(24),
                           child:
@@ -91,9 +94,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                     padding: EdgeInsets.symmetric(vertical: 16),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
-                                      color: Color(
-                                        0xff6600E4,
-                                      ).withOpacity(0.05),
+                                      color: primaryColor.withOpacity(0.05),
                                       borderRadius: BorderRadius.circular(24),
                                     ),
                                     child: Column(
@@ -105,7 +106,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                         Text(
                                           'Add Image',
                                           style: TextStyle(
-                                            color: Color(0xff6600E4),
+                                            color: primaryColor,
                                             fontSize: 16,
                                           ),
                                         ),
@@ -178,7 +179,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                               padding: EdgeInsets.symmetric(vertical: 16),
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: Color(0xff6600E4).withOpacity(0.05),
+                                color: primaryColor.withOpacity(0.05),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               child: Column(
@@ -190,7 +191,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                   Text(
                                     'Add Link',
                                     style: TextStyle(
-                                      color: Color(0xff6600E4),
+                                      color: primaryColor,
                                       fontSize: 16,
                                     ),
                                   ),
@@ -227,13 +228,13 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Color(0xff6600E4).withOpacity(0.05),
+                                    color: primaryColor.withOpacity(0.05),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     'Feb 28, 2025',
                                     style: TextStyle(
-                                      color: Color(0xff6600E4),
+                                      color: primaryColor,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),

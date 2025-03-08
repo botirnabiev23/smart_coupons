@@ -4,9 +4,17 @@ import 'package:smart_coupons/pages/home/bloc/category_bloc.dart';
 import 'package:smart_coupons/pages/home/home_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => CategoryBloc())],
+      providers: [
+        BlocProvider(
+          create: (_) => CategoryBloc()
+            ..add(
+              CategoryLoadEvent(),
+            ),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
