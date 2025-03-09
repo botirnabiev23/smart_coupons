@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_coupons/model/categories_model.dart';
-import 'package:smart_coupons/storage/storage_service.dart';
+import 'package:smart_coupons/storage/categories_storage_service.dart';
 
 part 'category_event.dart';
 

@@ -124,7 +124,6 @@ void showNewCategoryDialog(BuildContext context) {
                                       String newCategory =
                                           categoryController.text.trim();
                                       if (newCategory.isNotEmpty) {
-
                                         context.read<CategoryBloc>().add(CategoryAddEvent(newCategory));
                                         Navigator.pop(context);
                                       }

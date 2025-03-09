@@ -8,7 +8,6 @@ class StorageService {
   static Future<void> saveCategories(List<Categories> categories) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(categories.map((c) => c.toJson()).toList());
-    print("Сохраняем JSON: $jsonString");
 
     await prefs.setString(_categoriesKey, jsonString);
   }
@@ -16,7 +15,6 @@ class StorageService {
   static Future<List<Categories>> loadCategories() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_categoriesKey);
-    print("Данные в SharedPreferences: $jsonString");
     if (jsonString == null) return [];
     final List<dynamic> jsonList = jsonDecode(jsonString);
     return jsonList.map((json) => Categories.fromJson(json)).toList();

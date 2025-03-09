@@ -1,9 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_coupons/pages/coupons/coupons_add_page.dart';
+import 'package:smart_coupons/pages/coupons/widgets/coupons_edit_page.dart';
 import 'package:smart_coupons/theme/colors.dart';
 
-void showAddLinkDialog(BuildContext context, TextEditingController controller) {
+void showAddLinkDialog(
+  BuildContext context,
+  TextEditingController linkController,
+  Function updateUI,
+) {
+  TextEditingController tempController =
+      TextEditingController(text: linkController.text);
+
   showCupertinoDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
@@ -11,7 +19,7 @@ void showAddLinkDialog(BuildContext context, TextEditingController controller) {
       content: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: CupertinoTextField(
-          controller: controller,
+          controller: tempController,
           placeholder: 'www.site.com...',
           keyboardType: TextInputType.url,
           autofocus: true,
@@ -31,6 +39,10 @@ void showAddLinkDialog(BuildContext context, TextEditingController controller) {
             ),
           ),
           onPressed: () {
+            if (tempController.text.isNotEmpty) {
+              linkController.text = tempController.text;
+              updateUI();
+            }
             Navigator.pop(context);
           },
         ),
@@ -41,7 +53,7 @@ void showAddLinkDialog(BuildContext context, TextEditingController controller) {
 
 void showImagePickerOptions(
   BuildContext context,
-   Function(ImageSource) pickImage,
+  Function(ImageSource) pickImage,
 ) {
   showCupertinoModalPopup(
     context: context,
@@ -49,7 +61,7 @@ void showImagePickerOptions(
       title: Text('Add a Coupon`s Photo'),
       actions: [
         CupertinoActionSheetAction(
-          onPressed: ()  {
+          onPressed: () {
             Navigator.pop(context);
             pickImage(ImageSource.camera);
           },
@@ -85,5 +97,16 @@ void showCouponBottomSheet(BuildContext context) {
   showCupertinoSheet(
     context: context,
     pageBuilder: (BuildContext context) => const CouponsAddWidget(),
+  );
+}
+
+void showCouponEditBottomSheet(
+    BuildContext context, String title, String image) {
+  showCupertinoSheet(
+    context: context,
+    pageBuilder: (BuildContext context) => CouponsEditWidget(
+      title: title,
+      image: image,
+    ),
   );
 }
