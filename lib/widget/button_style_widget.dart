@@ -4,18 +4,19 @@ import 'package:smart_coupons/theme/colors.dart';
 class ButtonStyleWidget extends StatelessWidget {
   final String title;
   final double radius;
+  final VoidCallback function;
 
   const ButtonStyleWidget({
     super.key,
-    required this.title, required this.radius,
+    required this.title,
+    required this.radius,
+    required this.function,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        Navigator.pop(context);
-      },
+      onPressed: function,
       style: ButtonStyle(
         elevation: WidgetStateProperty.all(0),
         foregroundColor: WidgetStateProperty.resolveWith<Color>(

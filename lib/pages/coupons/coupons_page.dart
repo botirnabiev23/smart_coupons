@@ -54,6 +54,9 @@ class CouponsPage extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   final coupon = state.coupons[index];
                                   return InkWell(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(24),
+                                    ),
                                     onTap: () => showCouponEditBottomSheet(
                                       context,
                                       coupon.name,

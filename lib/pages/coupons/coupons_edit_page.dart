@@ -43,96 +43,100 @@ class CouponsEditWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 17,
                 color: primaryColor,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(24),
+          child: Material(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(24),
+                        ),
+                        child: Image.asset(
+                          image,
+                          width: double.infinity,
+                          height: 164,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Image.asset(
-                        image,
-                        width: double.infinity,
-                        height: 164,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const Gap(24),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Color(0xff000000).withOpacity(0.03),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Use Before',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                      const Gap(24),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xff000000).withOpacity(0.03),
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Use Before',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: primaryColor.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                formatDate(dateTime),
-                                style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: primaryColor.withOpacity(0.05),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  formatDate(dateTime),
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      elevation: WidgetStateProperty.all(0),
+                      foregroundColor:
+                          WidgetStateProperty.all(Color(0xffE40000)),
+                      backgroundColor: WidgetStateProperty.all(
+                          Color(0xffE40000).withOpacity(0.05)),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      )),
+                    ),
+                    onPressed: () => showDeleteDialog(context, id),
+                    child: Text(
+                      'Delete Coupon',
+                      style: TextStyle(
+                        fontSize: 16,
                       ),
                     ),
-                  ],
-                ),
-                Spacer(),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    elevation: WidgetStateProperty.all(0),
-                    foregroundColor: WidgetStateProperty.all(Color(0xffE40000)),
-                    backgroundColor: WidgetStateProperty.all(
-                        Color(0xffE40000).withOpacity(0.05)),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    )),
                   ),
-                  onPressed: () => showDeleteDialog(context, id),
-                  child: Text(
-                    'Delete Coupon',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const Gap(82),
-              ],
+                  const Gap(82),
+                ],
+              ),
             ),
           ),
         ),

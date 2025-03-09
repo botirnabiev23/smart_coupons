@@ -120,6 +120,7 @@ class _SettingPageState extends State<SettingPage> {
                         child: ButtonStyleWidget(
                           title: 'Terms Of Use',
                           radius: 16,
+                          function: () {},
                         ),
                       ),
                     ),
@@ -130,6 +131,7 @@ class _SettingPageState extends State<SettingPage> {
                         child: ButtonStyleWidget(
                           title: 'Privacy Policy',
                           radius: 16,
+                          function: () {},
                         ),
                       ),
                     ),

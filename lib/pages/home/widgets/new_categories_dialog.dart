@@ -82,6 +82,7 @@ void showNewCategoryDialog(BuildContext context) {
                               child: ButtonStyleWidget(
                                 title: 'Cancel',
                                 radius: 8,
+                                function: () => Navigator.pop(context),
                               ),
                             ),
                           ),

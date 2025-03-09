@@ -26,6 +26,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
   final ImagePicker _picker = ImagePicker();
   final TextEditingController controller = TextEditingController();
   final TextEditingController linkController = TextEditingController();
+  bool isActive = true;
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -37,7 +38,10 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
     }
   }
 
-  void addNewCoupon(BuildContext context, String name) {
+  void addNewCoupon(
+    BuildContext context,
+    String name,
+  ) {
     String? imagePath = _image?.path;
 
     String extractImageUrl(String url) {
@@ -75,8 +79,23 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
           previousPageTitle: 'Quit',
           middle: Text('New Coupon'),
           trailing: TextButton(
-              onPressed: () => addNewCoupon(context, controller.text),
-              child: Text('Save')),
+            onPressed: () {
+              addNewCoupon(context, controller.text);
+              if (controller.text.isEmpty){
+                setState(() {
+                  isActive = false;
+                });
+              }
+
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color:
+                    isActive ? primaryColor : Color.fromRGBO(220, 220, 221, 1),
+              ),
+            ),
+          ),
         ),
         child: Material(
           child: CustomScrollView(
