@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_coupons/model/categories_model.dart';
 import 'package:smart_coupons/pages/coupons/coupons_page.dart';
-import 'package:smart_coupons/pages/home/widgets/categories_bottom_sheet_widget.dart';
+import 'package:smart_coupons/pages/categories/widgets/categories_bottom_sheet_widget.dart';
 
 class CategoriesItem extends StatelessWidget {
   final String id;

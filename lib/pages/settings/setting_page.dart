@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_coupons/pages/buy_ads_page.dart';
+import 'package:smart_coupons/pages/buy_ads/buy_ads_page.dart';
 import 'package:smart_coupons/theme/colors.dart';
 import 'package:smart_coupons/widget/button_style_widget.dart';
 

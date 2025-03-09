@@ -1,12 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_coupons/pages/home/bloc/category_bloc.dart';
+import 'package:smart_coupons/pages/categories/bloc/category_bloc.dart';
 import 'package:smart_coupons/theme/colors.dart';
-import 'package:smart_coupons/widget/button_style_widget.dart';
 
-void showNewCategoryDialog(BuildContext context) {
-  TextEditingController categoryController = TextEditingController();
+void showEditCategoryDialog(BuildContext context, String id, String oldTitle) {
+  TextEditingController categoryController =
+  TextEditingController(text: oldTitle);
 
   showDialog(
     context: context,
@@ -29,9 +29,7 @@ void showNewCategoryDialog(BuildContext context) {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: 343,
-                  ),
+                  constraints: BoxConstraints(maxWidth: 343),
                   width: double.infinity,
                   padding: EdgeInsets.all(20),
                   child: Column(
@@ -39,7 +37,7 @@ void showNewCategoryDialog(BuildContext context) {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'New Category',
+                        'Edit Category',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.w600),
@@ -77,67 +75,57 @@ void showNewCategoryDialog(BuildContext context) {
                       Row(
                         children: [
                           Expanded(
-                            child: SizedBox(
-                              height: 36,
-                              child: ButtonStyleWidget(
-                                title: 'Cancel',
-                                radius: 8,
-                                function: () => Navigator.pop(context),
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: ButtonStyle(
+                                elevation: WidgetStateProperty.all(0),
+                                foregroundColor:
+                                WidgetStateProperty.all(primaryColor),
+                                backgroundColor: WidgetStateProperty.all(
+                                    primaryColor.withOpacity(0.05)),
+                                shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
                               ),
+                              child: Text('Cancel'),
                             ),
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                            child: SizedBox(
-                              height: 36,
-                              child: ElevatedButton(
-                                onPressed: isActive
-                                    ? () {
-                                        String newCategory =
-                                            categoryController.text.trim();
-                                        if (newCategory.isNotEmpty) {
-                                          context.read<CategoryBloc>().add(
-                                              CategoryAddEvent(newCategory));
-                                          Navigator.pop(context);
-                                        }
-                                      }
-                                    : null,
-                                style: ButtonStyle(
-                                  elevation: WidgetStateProperty.all(0),
-                                  foregroundColor:
-                                      WidgetStateProperty.resolveWith<Color>(
-                                    (Set<WidgetState> states) {
-                                      return Colors.white;
-                                    },
-                                  ),
-                                  backgroundColor:
-                                      WidgetStateProperty.resolveWith<Color>(
-                                    (Set<WidgetState> states) {
-                                      if (states
-                                          .contains(WidgetState.disabled)) {
-                                        return Color(0xff6600E4)
-                                            .withOpacity(0.5);
-                                      }
-                                      if (states
-                                          .contains(WidgetState.pressed)) {
-                                        return Color(0xff6600E4)
-                                            .withOpacity(0.7);
-                                      }
-
-                                      return Color(0xff6600E4);
-                                    },
-                                  ),
-                                  shape: WidgetStateProperty.all<
-                                      RoundedRectangleBorder>(
+                            child: ElevatedButton(
+                              onPressed: isActive
+                                  ? () {
+                                String newCategory =
+                                categoryController.text.trim();
+                                if (newCategory.isNotEmpty) {
+                                  context.read<CategoryBloc>().add(
+                                    CategoryEditEvent(
+                                        id, newCategory),
+                                  );
+                                  Navigator.pop(context);
+                                }
+                              }
+                                  : null,
+                              style: ButtonStyle(
+                                elevation: WidgetStateProperty.all(0),
+                                foregroundColor:
+                                WidgetStateProperty.all(Colors.white),
+                                backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                                      (states) {
+                                    if (states.contains(WidgetState.disabled)) {
+                                      return Color(0xff6600E4).withOpacity(0.5);
+                                    }
+                                    return Color(0xff6600E4);
+                                  },
+                                ),
+                                shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  padding:
-                                      WidgetStateProperty.all(EdgeInsets.zero),
-                                ),
-                                child: Text('Save'),
+                                    )),
                               ),
+                              child: Text('Save'),
                             ),
                           ),
                         ],
@@ -153,4 +141,3 @@ void showNewCategoryDialog(BuildContext context) {
     },
   );
 }
-

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_coupons/pages/home/bloc/category_bloc.dart';
-import 'package:smart_coupons/pages/home/widgets/categories_item_widget.dart';
-import 'package:smart_coupons/pages/home/widgets/new_categories_dialog.dart';
+import 'package:smart_coupons/pages/categories/bloc/category_bloc.dart';
+import 'package:smart_coupons/pages/categories/widgets/categories_item_widget.dart';
+import 'package:smart_coupons/pages/categories/widgets/new_categories_dialog.dart';
 import 'package:smart_coupons/theme/colors.dart';
 
-class CategoriesList extends StatelessWidget {
-  const CategoriesList({super.key});
+class CategoriesPage extends StatelessWidget {
+  const CategoriesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class CategoriesList extends StatelessWidget {
       child: BlocBuilder<CategoryBloc, CategoryState>(
         builder: (context, state) {
           if (state is CategoryLoaded) {
-            if(state.categories.isEmpty){
+            if (state.categories.isEmpty) {
               return Center(
                 child: InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(24)),
@@ -66,7 +66,8 @@ class CategoriesList extends StatelessWidget {
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
