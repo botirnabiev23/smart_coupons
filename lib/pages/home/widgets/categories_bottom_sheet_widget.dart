@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_coupons/pages/home/bloc/category_bloc.dart';
-import 'package:smart_coupons/pages/home/widgets/new_categories_dialog.dart';
+import 'package:smart_coupons/pages/home/widgets/edit_category_dialog.dart';
 import 'package:smart_coupons/theme/colors.dart';
 
 void showCategoryOptions(BuildContext context, String id, String title) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_coupons/pages/home/widgets/categories_list_widget.dart';
-import 'package:smart_coupons/pages/setting/setting_page.dart';
+import 'package:smart_coupons/pages/setting_page.dart';
 import 'package:smart_coupons/theme/colors.dart';
 
 class HomePage extends StatefulWidget {

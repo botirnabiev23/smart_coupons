@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_coupons/pages/coupons/bloc/coupon_bloc.dart';
 import 'package:smart_coupons/pages/coupons/widgets/coupons_bottom_sheet_widgets.dart';
 import 'package:smart_coupons/theme/colors.dart';
+import 'package:smart_coupons/widget/format_date.dart';
 
 class CouponsPage extends StatelessWidget {
   final String title;
@@ -18,9 +19,6 @@ class CouponsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formatDate(DateTime date) {
-      return DateFormat("MMM d, y").format(date);
-    }
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(

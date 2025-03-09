@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_coupons/pages/coupons/widgets/coupon_delete_dialog.dart';
 import 'package:smart_coupons/theme/colors.dart';
+import 'package:smart_coupons/widget/format_date.dart';
 
 class CouponsEditWidget extends StatelessWidget {
   final String title;
@@ -21,10 +22,6 @@ class CouponsEditWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formatDate(DateTime date) {
-      return DateFormat("MMM d, y").format(date);
-    }
-
     return MediaQuery.removePadding(
       removeTop: true,
       context: context,
