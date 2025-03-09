@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:smart_coupons/model/coupon_model.dart';
 import 'package:smart_coupons/model/image_source_model.dart';
 import 'package:smart_coupons/pages/coupons/widgets/add_link_dialog.dart';
+import 'package:smart_coupons/pages/coupons/widgets/coupon_delete_dialog.dart';
 import 'package:smart_coupons/pages/coupons/widgets/custom_box_widget.dart';
 import 'package:smart_coupons/pages/coupons/widgets/image_picker_option.dart';
 import 'package:smart_coupons/theme/colors.dart';
@@ -16,12 +18,16 @@ import 'package:smart_coupons/widget/text_field_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
+import 'bloc/coupon_bloc.dart';
+
 class AddOrEditCouponPage extends StatefulWidget {
   final Coupon? existingCoupon;
+  final String? categoryId;
 
   const AddOrEditCouponPage({
     super.key,
     this.existingCoupon,
+    this.categoryId,
   });
 
   @override
@@ -99,6 +105,7 @@ class _AddOrEditCouponPageState extends State<AddOrEditCouponPage> {
   Widget build(BuildContext context) {
     return MediaQuery.removePadding(
       removeTop: true,
+      removeBottom: true,
       context: context,
       child: CupertinoPageScaffold(
         resizeToAvoidBottomInset: false,
@@ -124,16 +131,14 @@ class _AddOrEditCouponPageState extends State<AddOrEditCouponPage> {
           ),
         ),
         child: Material(
-          child: CustomScrollView(
-            slivers: [
-              SliverFillRemaining(
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 32,
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SafeArea(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Gap(8),
                         TextFieldWidget(
@@ -283,8 +288,43 @@ class _AddOrEditCouponPageState extends State<AddOrEditCouponPage> {
                     ),
                   ),
                 ),
-              ),
-            ],
+                if (_isEdit) ...[
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      elevation: WidgetStateProperty.all(0),
+                      foregroundColor:
+                          WidgetStateProperty.all(Color(0xffE40000)),
+                      backgroundColor: WidgetStateProperty.all(
+                          Color(0xffE40000).withOpacity(0.05)),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      )),
+                    ),
+                    onPressed: () async {
+                      final bool? deleteConfirmed =
+                          await showDeleteDialog(context);
+
+                      if (deleteConfirmed == true) {
+                        context.read<CouponBloc>().add(
+                              DeleteCoupon(
+                                categoryId: widget.categoryId!,
+                                couponId: widget.existingCoupon!.id,
+                              ),
+                            );
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text(
+                      'Delete Coupon',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const Gap(80),
+                ],
+              ],
+            ),
           ),
         ),
       ),

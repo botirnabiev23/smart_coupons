@@ -26,6 +26,7 @@ class _SettingPageState extends State<SettingPage> {
             child: Column(
               children: [
                 InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -34,7 +35,8 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                     );
                   },
-                  child: Container(
+                  child: Ink(
+
                     width: double.infinity,
                     height: 120,
                     decoration: BoxDecoration(

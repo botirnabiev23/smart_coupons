@@ -12,7 +12,10 @@ void showCouponAddBottomSheet(
 ) async {
   final coupon = await showCupertinoSheet(
     context: context,
-    pageBuilder: (BuildContext context) => AddOrEditCouponPage(),
+    pageBuilder: (_) => BlocProvider.value(
+      value: context.read<CouponBloc>(),
+      child: AddOrEditCouponPage(),
+    ),
   );
   if (coupon == null) return;
   context.read<CouponBloc>().add(
@@ -30,8 +33,12 @@ void showCouponEditBottomSheet({
 }) async {
   final updatedCoupon = await showCupertinoSheet(
     context: context,
-    pageBuilder: (_) => AddOrEditCouponPage(
-      existingCoupon: coupon,
+    pageBuilder: (_) => BlocProvider.value(
+      value: context.read<CouponBloc>(),
+      child: AddOrEditCouponPage(
+        existingCoupon: coupon,
+        categoryId: categoryId,
+      ),
     ),
   );
   if (updatedCoupon == null) return;
