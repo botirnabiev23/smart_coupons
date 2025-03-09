@@ -17,7 +17,6 @@ class BuyAdsPage extends StatelessWidget {
             end: Alignment.centerRight,
             colors: [
               Color(0xFFE3E7F5),
-              Color(0xFFB68AE3),
               Color(0xFF8C55D8),
             ],
           ),
@@ -86,8 +85,7 @@ class BuyAdsPage extends StatelessWidget {
                 height: 48,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                     elevation: WidgetStateProperty.all(0),
                     foregroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -126,8 +124,7 @@ class BuyAdsPage extends StatelessWidget {
                 height: 48,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                     elevation: WidgetStateProperty.all(0),
                     foregroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -164,7 +161,7 @@ class BuyAdsPage extends StatelessWidget {
               Expanded(
                 child: SvgPicture.asset(
                   'assets/images/remove_ads_image.svg',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ],
