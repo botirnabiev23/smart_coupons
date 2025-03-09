@@ -1,23 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_coupons/pages/coupons/widgets/coupon_delete_dialog.dart';
 import 'package:smart_coupons/theme/colors.dart';
 import 'package:smart_coupons/widget/format_date.dart';
 
+import 'bloc/coupon_bloc.dart';
+
 class CouponsEditWidget extends StatelessWidget {
   final String title;
   final String image;
   final DateTime dateTime;
-  final String id;
+  final String couponId;
+  final String categoryId;
 
   const CouponsEditWidget({
     super.key,
     required this.title,
     required this.image,
     required this.dateTime,
-    required this.id,
+    required this.couponId,
+    required this.categoryId,
   });
 
   @override
@@ -126,7 +131,22 @@ class CouponsEditWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       )),
                     ),
-                    onPressed: () => showDeleteDialog(context, id),
+                    onPressed: () async {
+                      final bool? deleteConfirmed =
+                          await showDeleteDialog(context);
+
+                      print('aksdnaksndkasnd $deleteConfirmed');
+
+                      if (deleteConfirmed == true) {
+                        context.read<CouponBloc>().add(
+                              DeleteCoupon(
+                                categoryId: categoryId,
+                                couponId: couponId,
+                              ),
+                            );
+                        Navigator.of(context).pop();
+                      }
+                    },
                     child: Text(
                       'Delete Coupon',
                       style: TextStyle(

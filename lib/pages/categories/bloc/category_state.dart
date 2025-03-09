@@ -1,25 +1,11 @@
 part of 'category_bloc.dart';
 
-abstract class CategoryState extends Equatable {
-  const CategoryState();
-  @override
-  List<Object?> get props => [];
-}
+enum CategoryStatus { initial, loading, loaded, error }
 
-class CategoryInitial extends CategoryState {}
-
-class CategoryLoaded extends CategoryState {
-  final List<Categories> categories;
-  const CategoryLoaded(this.categories);
-
-  @override
-  List<Object?> get props => [categories];
-}
-
-class CategoryErrorState extends CategoryState {
-  final String error;
-  const CategoryErrorState(this.error);
-
-  @override
-  List<Object?> get props => [error];
+@freezed
+class CategoryState with _$CategoryState {
+  const factory CategoryState({
+    @Default(CategoryStatus.initial) CategoryStatus status,
+    @Default([]) List<CouponCategory> categories,
+  }) = _CategoryState;
 }

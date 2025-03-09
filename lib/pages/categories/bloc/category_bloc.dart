@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smart_coupons/model/categories_model.dart';
 import 'package:smart_coupons/storage/categories_storage_service.dart';
 
@@ -8,27 +9,35 @@ part 'category_event.dart';
 
 part 'category_state.dart';
 
-class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  final List<Categories> _categories = [];
+part 'category_bloc.freezed.dart';
 
-  CategoryBloc() : super(CategoryInitial()) {
+class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
+  CategoryBloc() : super(const CategoryState()) {
+    on<CategoryLoadEvent>(_loadCategories);
     on<CategoryAddEvent>(_addCategory);
     on<CategoryDeleteEvent>(_deleteCategory);
     on<CategoryEditEvent>(_editCategory);
-    on<CategoryLoadEvent>(_loadCategories);
   }
 
   Future<void> _loadCategories(
     CategoryLoadEvent event,
     Emitter<CategoryState> emit,
   ) async {
+    emit(state.copyWith(status: CategoryStatus.loading));
     try {
-      final savedCategories = await StorageService.loadCategories();
-      _categories.clear();
-      _categories.addAll(savedCategories);
-      emit(CategoryLoaded(List.from(_categories)));
+      final List<CouponCategory> categories =
+          await StorageService.loadCategories();
+
+      emit(
+        state.copyWith(
+          status: CategoryStatus.loaded,
+          categories: categories,
+        ),
+      );
     } catch (e) {
-      emit(CategoryErrorState(e.toString()));
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+      ));
     }
   }
 
@@ -37,12 +46,20 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
-      final newCategory = Categories.create(event.title);
-      _categories.add(newCategory);
-      await StorageService.saveCategories(_categories);
-      emit(CategoryLoaded(List.from(_categories)));
+      final newCategory = CouponCategory.create(event.title);
+      final newCategories = [
+        ...state.categories,
+        newCategory,
+      ];
+      await StorageService.saveCategories(newCategories);
+      emit(state.copyWith(
+        status: CategoryStatus.loaded,
+        categories: newCategories,
+      ));
     } catch (e) {
-      emit(CategoryErrorState(e.toString()));
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+      ));
     }
   }
 
@@ -51,11 +68,19 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
-      _categories.removeWhere((category) => category.id == event.id);
-      await StorageService.saveCategories(_categories);
-      emit(CategoryLoaded(List.from(_categories)));
+      final newCategories = state.categories
+          .where((category) => category.id != event.id)
+          .toList();
+
+      await StorageService.saveCategories(newCategories);
+      emit(state.copyWith(
+        status: CategoryStatus.loaded,
+        categories: newCategories,
+      ));
     } catch (e) {
-      emit(CategoryErrorState(e.toString()));
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+      ));
     }
   }
 
@@ -64,15 +89,22 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
-      final index =
-          _categories.indexWhere((category) => category.id == event.id);
-      if (index == -1) return;
+      final newCategories = state.categories.map((category) {
+        if (category.id == event.id) {
+          return category.copyWith(title: event.updatedTitle);
+        }
+        return category;
+      }).toList();
 
-      _categories[index] = _categories[index].copyWith(title: event.newTitle);
-      await StorageService.saveCategories(_categories);
-      emit(CategoryLoaded(List.from(_categories)));
+      await StorageService.saveCategories(newCategories);
+      emit(state.copyWith(
+        status: CategoryStatus.loaded,
+        categories: newCategories,
+      ));
     } catch (e) {
-      emit(CategoryErrorState(e.toString()));
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+      ));
     }
   }
 }

@@ -1,25 +1,25 @@
 import 'package:uuid/uuid.dart';
 
-class Categories {
+class CouponCategory {
   final String id;
   final String title;
 
-  Categories({required this.id, required this.title});
+  CouponCategory({required this.id, required this.title});
 
-  Categories copyWith({String? title}) {
-    return Categories(
+  CouponCategory copyWith({String? title}) {
+    return CouponCategory(
       id: id,
       title: title ?? this.title,
     );
   }
 
-  factory Categories.create(String title) {
-    return Categories(id: Uuid().v4(), title: title);
+  factory CouponCategory.create(String title) {
+    return CouponCategory(id: Uuid().v4(), title: title);
   }
 
   Map<String, dynamic> toJson() => {"id": id, "title": title};
 
-  factory Categories.fromJson(Map<String, dynamic> json) {
-    return Categories(id: json["id"], title: json["title"]);
+  factory CouponCategory.fromJson(Map<String, dynamic> json) {
+    return CouponCategory(id: json["id"], title: json["title"]);
   }
 }

@@ -1,70 +1,80 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:smart_coupons/model/coupon_model.dart';
-import 'package:smart_coupons/pages/coupons/bloc/coupon_bloc.dart';
+import 'package:smart_coupons/model/image_source_model.dart';
 import 'package:smart_coupons/pages/coupons/widgets/add_link_dialog.dart';
 import 'package:smart_coupons/pages/coupons/widgets/custom_box_widget.dart';
 import 'package:smart_coupons/pages/coupons/widgets/image_picker_option.dart';
 import 'package:smart_coupons/theme/colors.dart';
 import 'package:smart_coupons/widget/show_date_widget.dart';
 import 'package:smart_coupons/widget/text_field_widget.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
+import 'package:image_picker/image_picker.dart';
 
 class CouponsAddWidget extends StatefulWidget {
-  const CouponsAddWidget({super.key});
+  const CouponsAddWidget({
+    super.key,
+  });
 
   @override
   State<CouponsAddWidget> createState() => _CouponsAddWidgetState();
 }
 
 class _CouponsAddWidgetState extends State<CouponsAddWidget> {
-  File? _image;
   final ImagePicker _picker = ImagePicker();
-  final TextEditingController controller = TextEditingController();
-  final TextEditingController linkController = TextEditingController();
+  final TextEditingController _couponNameController = TextEditingController();
+  final TextEditingController _imageUrlController = TextEditingController();
+  File? _image;
   bool isActive = true;
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
-      String imagePath = pickedFile.path;
-      setState(() {
-        _image = File(imagePath);
-      });
-    }
+    if (pickedFile == null) return;
+
+    String imagePath = pickedFile.path;
+    setState(() {
+      _image = File(imagePath);
+    });
   }
 
-  void addNewCoupon(
+  Future<Coupon?> _openAddCouponSheet(
     BuildContext context,
     String name,
-  ) {
-    String? imagePath = _image?.path;
-
-    String extractImageUrl(String url) {
-      Uri uri = Uri.parse(url);
-      return uri.queryParameters['imgurl'] ?? url;
+  ) async {
+    final imageUrl = _imageUrlController.text.trim();
+    if (_image == null && imageUrl.isEmpty) {
+      return null;
     }
 
-    if (imagePath?.isEmpty ?? true) {
-      String? extractedUrl = linkController.text.isNotEmpty
-          ? extractImageUrl(linkController.text)
-          : null;
-      imagePath = extractedUrl;
+    late ImageSourceModel imageSource;
+
+    if (_image != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+
+      final String fileName = path.basename(_image!.path);
+
+      final savedImage = await _image!.copy('${appDir.path}/$fileName');
+
+      imageSource = ImageSourceModel.local(savedImage.path);
+    } else if (imageUrl.isNotEmpty) {
+      imageSource = ImageSourceModel.network(imageUrl);
+    } else {
+      return null;
     }
 
     final newCoupon = Coupon(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: Uuid().v4(),
       name: name,
-      image: imagePath,
+      imageSource: imageSource,
       date: DateTime.now(),
     );
-
-    context.read<CouponBloc>().add(AddCoupon(newCoupon));
-    Navigator.pop(context);
+    return newCoupon;
   }
 
   @override
@@ -79,14 +89,12 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
           previousPageTitle: 'Quit',
           middle: Text('New Coupon'),
           trailing: TextButton(
-            onPressed: () {
-              addNewCoupon(context, controller.text);
-              if (controller.text.isEmpty){
-                setState(() {
-                  isActive = false;
-                });
-              }
-
+            onPressed: () async {
+              final coupon = await _openAddCouponSheet(
+                context,
+                _couponNameController.text.trim(),
+              );
+              Navigator.pop(context, coupon);
             },
             child: Text(
               'Save',
@@ -111,11 +119,12 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                       children: [
                         const Gap(8),
                         TextFieldWidget(
-                          controller: controller,
+                          controller: _couponNameController,
                           hintText: 'Name',
                         ),
-                        if (linkController.text.isEmpty) ...[
-                          const Gap(16),
+                        const Gap(24),
+                        if (_imageUrlController.text.isEmpty &&
+                            _image == null) ...[
                           InkWell(
                             splashColor: Colors.transparent,
                             onTap: () => showImagePickerOptions(
@@ -123,59 +132,30 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                               _pickImage,
                             ),
                             borderRadius: BorderRadius.circular(24),
-                            child: _image == null
-                                ? Container(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: primaryColor.withOpacity(0.05),
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/images/add_image_icon.svg',
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Add Image',
-                                          style: TextStyle(
-                                            color: primaryColor,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(24),
-                                        ),
-                                        child: Image.file(
-                                          _image!,
-                                          width: double.infinity,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 10,
-                                        right: 10,
-                                        child: CustomBox(
-                                          onPressed: () {
-                                            setState(() {
-                                              _image = null;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: primaryColor.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/add_image_icon.svg',
                                   ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Add Image',
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ],
-                        if (_image == null) ...[
                           const Gap(8),
                           Row(
                             children: [
@@ -208,56 +188,87 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           const Gap(8),
                           InkWell(
                             splashColor: Colors.transparent,
-                            onTap: () =>
-                                showAddLinkDialog(context, linkController, () {
-                              setState(() {});
-                            }),
+                            onTap: () => showAddLinkDialog(
+                              context,
+                              _imageUrlController,
+                              () {
+                                setState(() {});
+                              },
+                            ),
                             borderRadius: BorderRadius.circular(24),
-                            child: linkController.text.isEmpty
-                                ? Container(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: primaryColor.withOpacity(0.05),
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/images/link_icon.svg',
-                                        ),
-                                        const Gap(8),
-                                        Text(
-                                          'Add Link',
-                                          style: TextStyle(
-                                            color: primaryColor,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : TextField(
-                                    controller: linkController,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide:
-                                            BorderSide(color: primaryColor),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(
-                                          color: primaryColor,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: primaryColor.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/link_icon.svg',
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    'Add Link',
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 16,
                                     ),
                                   ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_imageUrlController.text.isNotEmpty) ...[
+                          TextField(
+                            controller: _imageUrlController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: primaryColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: primaryColor,
+                                  width: 2,
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_image != null) ...[
+                          Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(24),
+                                ),
+                                child: Image.file(
+                                  _image!,
+                                  width: double.infinity,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: CustomBox(
+                                  onPressed: () {
+                                    setState(() {
+                                      _image = null;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                         const Gap(24),

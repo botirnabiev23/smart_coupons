@@ -1,31 +1,18 @@
-class Coupon {
-  final String id;
-  final String name;
-  final String? image;
-  final DateTime date;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'image_source_model.dart';
 
-  Coupon({
-    required this.id,
-    required this.name,
-    this.image,
-    required this.date,
-  });
+part 'coupon_model.freezed.dart';
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'image': image,
-      'date': date.toIso8601String(),
-    };
-  }
+part 'coupon_model.g.dart';
 
-  factory Coupon.fromJson(Map<String, dynamic> json) {
-    return Coupon(
-      id: json['id'],
-      name: json['name'],
-      image: json['image'],
-      date: DateTime.parse(json['date']),
-    );
-  }
+@freezed
+class Coupon with _$Coupon {
+  const factory Coupon({
+    required String id,
+    required String name,
+    required ImageSourceModel imageSource,
+    required DateTime date,
+  }) = _Coupon;
+
+  factory Coupon.fromJson(Map<String, dynamic> json) => _$CouponFromJson(json);
 }

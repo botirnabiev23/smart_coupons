@@ -1,24 +1,12 @@
 part of 'coupon_bloc.dart';
 
-abstract class CouponState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+enum CouponStatus { initial, loading, loaded, error }
 
-class CouponsInitial extends CouponState {}
-
-class CouponsLoaded extends CouponState {
-  final List<Coupon> coupons;
-  CouponsLoaded(this.coupons);
-
-  @override
-  List<Object?> get props => [coupons];
-}
-
-class CouponsError extends CouponState {
-  final String message;
-  CouponsError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+@freezed
+class CouponState with _$CouponState {
+  const factory CouponState({
+    @Default(CouponStatus.initial) CouponStatus status,
+    @Default([]) List<Coupon> coupons,
+    @Default('') String errorMessage,
+  }) = _CouponState;
 }

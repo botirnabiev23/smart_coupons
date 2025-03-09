@@ -5,29 +5,64 @@ import 'dart:convert';
 class CouponStorageService {
   static const String _couponsKey = "coupons_list";
 
-  static Future<void> saveCoupons(List<Coupon> coupons) async {
+  static Future<void> saveCoupons({
+    required String categoryId,
+    required List<Coupon> coupons,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(coupons.map((c) => c.toJson()).toList());
-    await prefs.setString(_couponsKey, jsonString);
+    await prefs.setString(categoryId, jsonString);
   }
 
-  static Future<List<Coupon>> loadCoupons() async {
+  static Future<List<Coupon>> loadCoupons({
+    required String categoryId,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_couponsKey);
-    if (jsonString == null) return [];
+    final jsonString = prefs.getString(categoryId);
+
+    if (jsonString == null) {
+      print('No coupons found for category: $categoryId');
+      return [];
+    }
+
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    return jsonList.map((json) => Coupon.fromJson(json)).toList();
+    final coupons = jsonList.map((json) => Coupon.fromJson(json)).toList();
+
+    // Print each coupon's details
+    coupons.forEach((coupon) {
+      print('asdasdasdas Coupon ID: ${coupon.id}');
+      print('asdasdasdas Name: ${coupon.name}');
+      print('asdasdasdas Image Source: ${coupon.imageSource}');
+      print('asdasdasdas Date: ${coupon.date}');
+      print('----------');
+    });
+
+    return coupons;
   }
 
-  static Future<void> addCoupon(Coupon coupon) async {
-    List<Coupon> coupons = await loadCoupons();
+  static Future<void> addCoupon({
+    required String categoryId,
+    required Coupon coupon,
+  }) async {
+    List<Coupon> coupons = await loadCoupons(categoryId: categoryId);
     coupons.add(coupon);
-    await saveCoupons(coupons);
+    await saveCoupons(
+      categoryId: categoryId,
+      coupons: coupons,
+    );
   }
 
-  static Future<void> deleteCoupon(String id) async {
-    List<Coupon> coupons = await loadCoupons();
-    coupons.removeWhere((coupon) => coupon.id == id);
-    await saveCoupons(coupons);
+  static Future<void> deleteCoupon({
+    required String categoryId,
+    required String couponId,
+  }) async {
+    List<Coupon> coupons = await loadCoupons(
+      categoryId: categoryId,
+    );
+    coupons.removeWhere((coupon) => coupon.id == couponId);
+    await saveCoupons(
+      categoryId: categoryId,
+      coupons: coupons,
+    );
   }
 }

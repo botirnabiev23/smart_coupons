@@ -4,31 +4,33 @@ import 'package:smart_coupons/pages/coupons/coupons_page.dart';
 import 'package:smart_coupons/pages/categories/widgets/categories_bottom_sheet_widget.dart';
 
 class CategoriesItem extends StatelessWidget {
-  final String id;
-  final Categories coupon;
-  final Color colorBack;
-  final Color colorText;
+  final CouponCategory couponCategory;
+  final Color bgColor;
+  final Color textColor;
 
   const CategoriesItem({
     super.key,
-    required this.coupon,
-    required this.colorBack,
-    required this.colorText,
-    required this.id,
+    required this.couponCategory,
+    required this.bgColor,
+    required this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return IntrinsicWidth(
       child: InkWell(
-        onLongPress: () => showCategoryOptions(context, id, coupon.title),
+        onLongPress: () => showCategoryOptions(
+          context,
+          couponCategory,
+        ),
         splashColor: Colors.transparent,
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => CouponsPage(
-                title: coupon.title,
+                categoryId: couponCategory.id,
+                title: couponCategory.title,
               ),
             ),
           );
@@ -39,15 +41,15 @@ class CategoriesItem extends StatelessWidget {
           height: 92,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: colorText.withOpacity(0.1),
+            color: textColor.withOpacity(0.1),
           ),
           child: Center(
             child: Text(
               softWrap: false,
               maxLines: 1,
-              coupon.title,
+              couponCategory.title,
               style: TextStyle(
-                color: colorBack,
+                color: bgColor,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
