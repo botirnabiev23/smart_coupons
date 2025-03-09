@@ -4,6 +4,7 @@ import 'package:smart_coupons/model/coupon_model.dart';
 import 'package:smart_coupons/storage/coupons_storage_service.dart';
 
 part 'coupon_event.dart';
+
 part 'coupon_state.dart';
 
 class CouponBloc extends Bloc<CouponEvent, CouponState> {
@@ -12,7 +13,11 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
     on<AddCoupon>(_onAddCoupon);
     on<DeleteCoupon>(_onDeleteCoupon);
   }
-  Future<void> _onLoadCoupons(LoadCoupons event, Emitter<CouponState> emit) async {
+
+  Future<void> _onLoadCoupons(
+    LoadCoupons event,
+    Emitter<CouponState> emit,
+  ) async {
     try {
       final coupons = await CouponStorageService.loadCoupons();
       emit(CouponsLoaded(coupons));
@@ -21,7 +26,10 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
     }
   }
 
-  Future<void> _onAddCoupon(AddCoupon event, Emitter<CouponState> emit) async {
+  Future<void> _onAddCoupon(
+    AddCoupon event,
+    Emitter<CouponState> emit,
+  ) async {
     try {
       await CouponStorageService.addCoupon(event.coupon);
       final coupons = await CouponStorageService.loadCoupons();
@@ -31,7 +39,8 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
     }
   }
 
-  Future<void> _onDeleteCoupon(DeleteCoupon event, Emitter<CouponState> emit) async {
+  Future<void> _onDeleteCoupon(
+      DeleteCoupon event, Emitter<CouponState> emit) async {
     try {
       await CouponStorageService.deleteCoupon(event.id);
       final coupons = await CouponStorageService.loadCoupons();

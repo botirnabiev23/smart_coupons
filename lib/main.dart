@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_coupons/pages/coupons/bloc/coupon_bloc.dart';
 import 'package:smart_coupons/pages/home/bloc/category_bloc.dart';
 import 'package:smart_coupons/pages/home/home_page.dart';
+import 'package:smart_coupons/pages/setting/setting_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: const HomePage());
+    return MaterialApp(
+      home: const HomePage(),
+    );
   }
 }

@@ -19,7 +19,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   }
 
   Future<void> _loadCategories(
-      CategoryLoadEvent event, Emitter<CategoryState> emit) async {
+    CategoryLoadEvent event,
+    Emitter<CategoryState> emit,
+  ) async {
     try {
       final savedCategories = await StorageService.loadCategories();
       _categories.clear();

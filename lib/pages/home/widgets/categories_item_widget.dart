@@ -27,8 +27,9 @@ class CategoriesItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  CouponsPage(title: coupon.title),
+              builder: (BuildContext context) => CouponsPage(
+                title: coupon.title,
+              ),
             ),
           );
         },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_coupons/pages/home/widgets/categories_list_widget.dart';
+import 'package:smart_coupons/pages/setting/setting_page.dart';
 import 'package:smart_coupons/theme/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +19,11 @@ class _HomePageState extends State<HomePage> {
       selectIndex = index;
     });
   }
+
+  final List<Widget> screens = const [
+    CategoriesList(),
+    SettingPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +44,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(bottom: 6, top: 8),
                 child: SvgPicture.asset(
                   'assets/images/coupon_icon.svg',
-                  color:
-                      selectIndex == 0 ? primaryColor : Color(0xffC7C7C7),
+                  color: selectIndex == 0 ? primaryColor : Color(0xffC7C7C7),
                 ),
               ),
               label: 'Categories',
@@ -49,8 +54,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(bottom: 6, top: 8),
                 child: SvgPicture.asset(
                   'assets/images/setting_icon.svg',
-                  color:
-                      selectIndex == 1 ? primaryColor : Color(0xffC7C7C7),
+                  color: selectIndex == 1 ? primaryColor : Color(0xffC7C7C7),
                 ),
               ),
               label: 'Setting',
@@ -58,10 +62,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: SafeArea(child: CategoriesList()),
+      body: screens[selectIndex],
     );
   }
 }
-
-
-

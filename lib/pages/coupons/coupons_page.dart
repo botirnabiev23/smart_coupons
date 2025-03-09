@@ -11,7 +11,10 @@ import 'package:smart_coupons/theme/colors.dart';
 class CouponsPage extends StatelessWidget {
   final String title;
 
-  const CouponsPage({super.key, required this.title});
+  const CouponsPage({
+    super.key,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +60,10 @@ class CouponsPage extends StatelessWidget {
                                       context,
                                       coupon.name,
                                       coupon.image!,
-                                    // временно
+                                      coupon.date,
+                                      coupon.id,
+                                      // временно
                                     ),
-                                    onLongPress: () {
-                                      context
-                                          .read<CouponBloc>()
-                                          .add(DeleteCoupon(coupon.id));
-                                    },
                                     child: Container(
                                       height: 164,
                                       width: 164,

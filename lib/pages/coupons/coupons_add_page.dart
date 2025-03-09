@@ -7,9 +7,12 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_coupons/model/coupon_model.dart';
 import 'package:smart_coupons/pages/coupons/bloc/coupon_bloc.dart';
-import 'package:smart_coupons/pages/coupons/widgets/coupons_bottom_sheet_widgets.dart';
+import 'package:smart_coupons/pages/coupons/widgets/add_link_dialog.dart';
 import 'package:smart_coupons/pages/coupons/widgets/custom_box_widget.dart';
+import 'package:smart_coupons/pages/coupons/widgets/image_picker_option.dart';
 import 'package:smart_coupons/theme/colors.dart';
+import 'package:smart_coupons/widget/show_date_widget.dart';
+import 'package:smart_coupons/widget/text_field_widget.dart';
 
 class CouponsAddWidget extends StatefulWidget {
   const CouponsAddWidget({super.key});
@@ -43,16 +46,17 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
     }
 
     if (imagePath?.isEmpty ?? true) {
-      String? extractedUrl = linkController.text.isNotEmpty ? extractImageUrl(linkController.text) : null;
+      String? extractedUrl = linkController.text.isNotEmpty
+          ? extractImageUrl(linkController.text)
+          : null;
       imagePath = extractedUrl;
     }
-
 
     final newCoupon = Coupon(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: name,
       image: imagePath,
-      date: DateTime(2025, 2, 28),
+      date: DateTime.now(),
     );
 
     context.read<CouponBloc>().add(AddCoupon(newCoupon));
@@ -87,27 +91,9 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                     child: Column(
                       children: [
                         const Gap(8),
-                        TextField(
+                        TextFieldWidget(
                           controller: controller,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            hintText: 'Name',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: primaryColor),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: primaryColor,
-                                width: 2,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                          ),
+                          hintText: 'Name',
                         ),
                         if (linkController.text.isEmpty) ...[
                           const Gap(16),
@@ -256,48 +242,8 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           ),
                         ],
                         const Gap(24),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xff000000).withOpacity(0.03),
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Use Before',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: primaryColor.withOpacity(0.05),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    'Feb 28, 2025',
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        ShowDateWidget(
+                          dateTime: DateTime.now(),
                         ),
                         const Gap(16),
                       ],
