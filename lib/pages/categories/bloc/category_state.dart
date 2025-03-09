@@ -6,6 +6,6 @@ enum CategoryStatus { initial, loading, loaded, error }
 class CategoryState with _$CategoryState {
   const factory CategoryState({
     @Default(CategoryStatus.initial) CategoryStatus status,
-    @Default([]) List<CouponCategory> categories,
+    @Default([]) List<Category> categories,
   }) = _CategoryState;
 }

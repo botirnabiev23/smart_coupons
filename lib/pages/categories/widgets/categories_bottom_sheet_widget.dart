@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_coupons/db/app_database.dart';
 import 'package:smart_coupons/model/categories_model.dart';
 import 'package:smart_coupons/pages/categories/bloc/category_bloc.dart';
 import 'package:smart_coupons/theme/colors.dart';
@@ -9,7 +10,7 @@ import 'show_category_dialog.dart';
 
 void showCategoryOptions(
   BuildContext context,
-  CouponCategory couponCategory,
+  Category couponCategory,
 ) {
   showCupertinoModalPopup(
     context: context,

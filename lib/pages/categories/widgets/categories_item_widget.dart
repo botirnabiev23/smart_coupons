@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:smart_coupons/db/app_database.dart';
 import 'package:smart_coupons/model/categories_model.dart';
 import 'package:smart_coupons/pages/coupons/coupons_page.dart';
 import 'package:smart_coupons/pages/categories/widgets/categories_bottom_sheet_widget.dart';
 
 class CategoriesItem extends StatelessWidget {
-  final CouponCategory couponCategory;
+  final Category couponCategory;
   final Color bgColor;
   final Color textColor;
 

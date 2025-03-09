@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_coupons/db/dao/category_dao.dart';
 import 'package:smart_coupons/pages/categories/bloc/category_bloc.dart';
 import 'package:smart_coupons/pages/categories/widgets/categories_item_widget.dart';
 import 'package:smart_coupons/pages/categories/widgets/empty_categories_widget.dart';
@@ -13,8 +14,11 @@ class CategoriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final categoryDao = RepositoryProvider.of<CategoryDao>(context);
     return BlocProvider(
-      create: (_) => CategoryBloc()..add(CategoryLoadEvent()),
+      create: (_) => CategoryBloc(
+        categoryDao: categoryDao,
+      )..add(CategoryStartListeningEvent()),
       child: CategoriesPageBody(),
     );
   }
