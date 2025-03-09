@@ -14,6 +14,7 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
   CouponBloc() : super(const CouponState()) {
     on<LoadCoupons>(_onLoadCoupons);
     on<AddCoupon>(_onAddCoupon);
+    on<EditCoupon>(_onEditCoupon);
     on<DeleteCoupon>(_onDeleteCoupon);
   }
 
@@ -59,6 +60,30 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
       emit(state.copyWith(
         status: CouponStatus.error,
         errorMessage: "Ошибка добавления купона: $e",
+      ));
+    }
+  }
+
+  Future<void> _onEditCoupon(
+    EditCoupon event,
+    Emitter<CouponState> emit,
+  ) async {
+    try {
+      await CouponStorageService.updateCoupon(
+        updatedCoupon: event.updatedCoupon,
+        categoryId: event.categoryId,
+      );
+      final coupons = await CouponStorageService.loadCoupons(
+        categoryId: event.categoryId,
+      );
+      emit(state.copyWith(
+        status: CouponStatus.loaded,
+        coupons: coupons,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: CouponStatus.error,
+        errorMessage: "Ошибка обновления купона: $e",
       ));
     }
   }

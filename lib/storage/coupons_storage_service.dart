@@ -28,15 +28,6 @@ class CouponStorageService {
     final List<dynamic> jsonList = jsonDecode(jsonString);
     final coupons = jsonList.map((json) => Coupon.fromJson(json)).toList();
 
-    // Print each coupon's details
-    coupons.forEach((coupon) {
-      print('asdasdasdas Coupon ID: ${coupon.id}');
-      print('asdasdasdas Name: ${coupon.name}');
-      print('asdasdasdas Image Source: ${coupon.imageSource}');
-      print('asdasdasdas Date: ${coupon.date}');
-      print('----------');
-    });
-
     return coupons;
   }
 
@@ -46,6 +37,25 @@ class CouponStorageService {
   }) async {
     List<Coupon> coupons = await loadCoupons(categoryId: categoryId);
     coupons.add(coupon);
+    await saveCoupons(
+      categoryId: categoryId,
+      coupons: coupons,
+    );
+  }
+
+  static Future<void> updateCoupon({
+    required String categoryId,
+    required Coupon updatedCoupon,
+  }) async {
+    List<Coupon> coupons = await loadCoupons(categoryId: categoryId);
+
+    final index = coupons.indexWhere((coupon) => coupon.id == updatedCoupon.id);
+
+    if (index == -1) {
+      return;
+    }
+    coupons[index] = updatedCoupon;
+
     await saveCoupons(
       categoryId: categoryId,
       coupons: coupons,

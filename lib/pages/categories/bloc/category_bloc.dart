@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smart_coupons/db/app_database.dart';
 import 'package:smart_coupons/db/dao/category_dao.dart';
-import 'package:smart_coupons/db/tables/categories_table.dart';
 
 part 'category_event.dart';
 
@@ -35,11 +34,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         categories: categories,
       ),
       onError: (error, stackTrace) {
-        // Log the error and stack trace
-        print('Error in CategoryBloc stream: $error');
-        if (stackTrace != null) {
-          print('Stack Trace: $stackTrace');
-        }
         return state.copyWith(status: CategoryStatus.error);
       },
     );

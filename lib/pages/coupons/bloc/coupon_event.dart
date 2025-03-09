@@ -32,6 +32,22 @@ class AddCoupon extends CouponEvent {
       ];
 }
 
+class EditCoupon extends CouponEvent {
+  final String categoryId;
+  final Coupon updatedCoupon;
+
+  EditCoupon({
+    required this.categoryId,
+    required this.updatedCoupon,
+  });
+
+  @override
+  List<Object?> get props => [
+    categoryId,
+    updatedCoupon,
+  ];
+}
+
 class DeleteCoupon extends CouponEvent {
   final String categoryId;
   final String couponId;

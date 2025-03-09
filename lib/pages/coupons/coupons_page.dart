@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +57,7 @@ class _CouponsPageBodyState extends State<CouponsPageBody> {
         previousPageTitle: 'Back',
         middle: Text(widget.title),
         trailing: IconButton(
-          onPressed: () => showCouponBottomSheet(
+          onPressed: () => showCouponAddBottomSheet(
             context,
             widget.categoryId,
           ),
@@ -100,14 +102,9 @@ class _CouponsPageBodyState extends State<CouponsPageBody> {
                                     Radius.circular(24),
                                   ),
                                   onTap: () => showCouponEditBottomSheet(
-                                    context,
-                                    coupon.name,
-                                    "asx",
-                                    coupon.date,
-                                    coupon.id,
-                                    widget.categoryId,
-
-                                    // временно
+                                    context: context,
+                                    categoryId: widget.categoryId,
+                                    coupon: coupon,
                                   ),
                                   child: Container(
                                     height: 164,
@@ -130,8 +127,8 @@ class _CouponsPageBodyState extends State<CouponsPageBody> {
                                               LocalImageSourceModel(
                                                 :final path
                                               ) =>
-                                                Image.asset(
-                                                  path,
+                                                Image.file(
+                                                  File(path),
                                                   fit: BoxFit.cover,
                                                 ),
                                               NetworkImageSourceModel(
@@ -213,7 +210,7 @@ class _CouponsPageBodyState extends State<CouponsPageBody> {
                       child: Center(
                         child: InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(24)),
-                          onTap: () => showCouponBottomSheet(
+                          onTap: () => showCouponAddBottomSheet(
                             context,
                             widget.categoryId,
                           ),

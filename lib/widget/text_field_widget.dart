@@ -4,9 +4,13 @@ import 'package:smart_coupons/theme/colors.dart';
 class TextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final ValueChanged<String>? onChanged;
+
   const TextFieldWidget({
     super.key,
-    required this.controller, required this.hintText,
+    required this.controller,
+    required this.hintText,
+    this.onChanged,
   });
 
   @override
@@ -14,6 +18,7 @@ class TextFieldWidget extends StatelessWidget {
     return TextField(
       controller: controller,
       textAlign: TextAlign.center,
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
         border: OutlineInputBorder(

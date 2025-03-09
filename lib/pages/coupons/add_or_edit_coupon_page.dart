@@ -16,30 +16,52 @@ import 'package:smart_coupons/widget/text_field_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
-class CouponsAddWidget extends StatefulWidget {
-  const CouponsAddWidget({
+class AddOrEditCouponPage extends StatefulWidget {
+  final Coupon? existingCoupon;
+
+  const AddOrEditCouponPage({
     super.key,
+    this.existingCoupon,
   });
 
   @override
-  State<CouponsAddWidget> createState() => _CouponsAddWidgetState();
+  State<AddOrEditCouponPage> createState() => _AddOrEditCouponPageState();
 }
 
-class _CouponsAddWidgetState extends State<CouponsAddWidget> {
+class _AddOrEditCouponPageState extends State<AddOrEditCouponPage> {
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _couponNameController = TextEditingController();
   final TextEditingController _imageUrlController = TextEditingController();
   File? _image;
 
+  @override
+  void initState() {
+    super.initState();
+    if (_isEdit) {
+      _couponNameController.text = widget.existingCoupon!.name;
+      final imageSource = widget.existingCoupon!.imageSource;
+      imageSource.map(
+        local: (localImage) {
+          _image = File(localImage.path);
+        },
+        network: (networkImage) {
+          _imageUrlController.text = networkImage.url;
+        },
+      );
+    }
+  }
+
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile == null) return;
 
-    String imagePath = pickedFile.path;
     setState(() {
-      _image = File(imagePath);
+      _image = File(pickedFile.path);
+      _imageUrlController.clear();
     });
   }
+
+  bool get _isEdit => widget.existingCoupon != null;
 
   bool get _isActive =>
       _hasImage && _couponNameController.text.trim().isNotEmpty;
@@ -49,21 +71,15 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
 
   Future<Coupon?> _openAddCouponSheet(
     BuildContext context,
-    String name,
   ) async {
     final imageUrl = _imageUrlController.text.trim();
-    if (!_hasImage) {
-      return null;
-    }
+    if (!_hasImage) return null;
 
     late ImageSourceModel imageSource;
     if (_image != null) {
       final appDir = await getApplicationDocumentsDirectory();
-
       final String fileName = path.basename(_image!.path);
-
       final savedImage = await _image!.copy('${appDir.path}/$fileName');
-
       imageSource = ImageSourceModel.local(savedImage.path);
     } else if (imageUrl.isNotEmpty) {
       imageSource = ImageSourceModel.network(imageUrl);
@@ -71,13 +87,12 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
       return null;
     }
 
-    final newCoupon = Coupon(
-      id: Uuid().v4(),
-      name: name,
+    return Coupon(
+      id: _isEdit ? widget.existingCoupon!.id : Uuid().v4(),
+      name: _couponNameController.text.trim(),
       imageSource: imageSource,
       date: DateTime.now(),
     );
-    return newCoupon;
   }
 
   @override
@@ -89,23 +104,21 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
         resizeToAvoidBottomInset: false,
         navigationBar: CupertinoNavigationBar(
           transitionBetweenRoutes: false,
-          previousPageTitle: 'Quit',
-          middle: Text('New Coupon'),
+          previousPageTitle: 'Back',
+          middle: Text(_isEdit ? 'Edit Coupon' : 'New Coupon'),
           trailing: TextButton(
             onPressed: _isActive
                 ? () async {
-                    final coupon = await _openAddCouponSheet(
-                      context,
-                      _couponNameController.text.trim(),
-                    );
+                    final coupon = await _openAddCouponSheet(context);
                     Navigator.pop(context, coupon);
                   }
                 : null,
             child: Text(
-              'Save',
+              _isEdit ? 'Edit' : 'Save',
               style: TextStyle(
-                color:
-                    _isActive ? primaryColor : Color.fromRGBO(220, 220, 221, 1),
+                color: _isActive
+                    ? primaryColor
+                    : const Color.fromRGBO(220, 220, 221, 1),
               ),
             ),
           ),
@@ -126,9 +139,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                         TextFieldWidget(
                           controller: _couponNameController,
                           hintText: 'Name',
-                          onChanged: (_) {
-                            setState(() {});
-                          },
+                          onChanged: (_) => setState(() {}),
                         ),
                         const Gap(24),
                         if (_imageUrlController.text.isEmpty &&
@@ -141,7 +152,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                             ),
                             borderRadius: BorderRadius.circular(24),
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: primaryColor.withOpacity(0.05),
@@ -152,7 +163,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                   SvgPicture.asset(
                                     'assets/images/add_image_icon.svg',
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Text(
                                     'Add Image',
                                     style: TextStyle(
@@ -168,10 +179,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           Row(
                             children: [
                               Expanded(
-                                child: ColoredBox(
-                                  color: Colors.grey.shade300,
-                                  child: SizedBox(height: 1),
-                                ),
+                                child: Divider(color: Colors.grey.shade300),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -186,10 +194,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                                 ),
                               ),
                               Expanded(
-                                child: ColoredBox(
-                                  color: Colors.grey.shade300,
-                                  child: SizedBox(height: 1),
-                                ),
+                                child: Divider(color: Colors.grey.shade300),
                               ),
                             ],
                           ),
@@ -199,13 +204,11 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                             onTap: () => showAddLinkDialog(
                               context,
                               _imageUrlController,
-                              () {
-                                setState(() {});
-                              },
+                              () => setState(() {}),
                             ),
                             borderRadius: BorderRadius.circular(24),
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: primaryColor.withOpacity(0.05),
@@ -235,30 +238,14 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                             readOnly: true,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _imageUrlController.clear();
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: primaryColor,
-                                ),
+                                onPressed: () => setState(() {
+                                  _imageUrlController.clear();
+                                }),
+                                icon: Icon(Icons.close, color: primaryColor),
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(color: primaryColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
                               ),
                             ),
                           ),
@@ -267,9 +254,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           Stack(
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(24),
-                                ),
+                                borderRadius: BorderRadius.circular(24),
                                 child: Image.file(
                                   _image!,
                                   width: double.infinity,
@@ -292,9 +277,7 @@ class _CouponsAddWidgetState extends State<CouponsAddWidget> {
                           ),
                         ],
                         const Gap(24),
-                        ShowDateWidget(
-                          dateTime: DateTime.now(),
-                        ),
+                        ShowDateWidget(dateTime: DateTime.now()),
                         const Gap(16),
                       ],
                     ),
